@@ -20,11 +20,12 @@
         "vue-loader": "^15.9.3",
         "vue-style-loader": "^4.1.2",
         "vue-template-compiler": "^2.6.12",
-        "webpack": "^5.1.2",
-        "webpack-cli": "^4.3.1",
-        "webpack-dev-server": "^3.11.0"
+        "webpack": "^5.92.0",
+        "webpack-cli": "^4.10.0",
+        "webpack-dev-server": "^3.11.3"
     },
     "dependencies": {
+        "cors-anywhere": "^0.4.4",
         "trading-vue-js": "^1.0.0",
         "tvjs-overlays": "^0.5.0",
         "tvjs-xp": "^0.3.0",
