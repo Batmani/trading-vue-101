@@ -15,7 +15,7 @@
 
 <script>
 import Chartbox from './Chartbox.vue';
-import Data from '../data/data_tf.json'; // Ensure this path is correct
+import Data from '../datafolder/data/data_tf.json'; // Ensure this path is correct
 export default {
   name: 'Multichart',
   description: 'All charts must work correctly and independently',

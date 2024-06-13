@@ -3,7 +3,8 @@
       <tf-selector :charts="availableTimeframes" @selected="onTimeframeSelected"></tf-selector>
       <trading-vue
         ref="tvjs"
-        :data="chartData"
+        :data="Data"
+        :overlays="overlays"
         :toolbar="true"
         :legend-buttons="['display']"
         @legend-button-click="onButtonClick"
@@ -15,14 +16,13 @@
   </template>
   
   <script>
-  import { TradingVue, DataCube } from 'trading-vue-js';
-  import TfSelector from './components/TFSelector.vue';
+  import { TradingVue,  DataCube, Sidebar, MultiChart } from 'trading-vue-js';
+  import TfSelector from 'trading-vue-js';
   import Utils from '../src/DataHelper/utils.js';
   import Const from '../src/DataHelper/constants.js';
   import Stream from '../src/DataHelper/stream.js';
-//   import Overlays from 'tvjs-overlays';
-//   import Extensions from 'tvjs-xp';
-  
+  import Overlays from 'tvjs-overlays';
+  import Data from 'trading-vue-js'
   const PORT = location.port;
   const URL = `http://localhost:${PORT}/api/v1/klines?symbol=BTCUSDT`;
   const WSS = `ws://localhost:${PORT}/ws/btcusdt@aggTrade`;
@@ -31,12 +31,12 @@
     name: 'App',
     components: {
       TradingVue,
-      TfSelector,
+      TfSelector,Sidebar, MultiChart
     },
     data() {
       return {
         chartData: new DataCube({
-          ohlcv: [],
+            ohlcv: [],
           onchart: [],
           offchart: [],
           datasets: [],
@@ -44,15 +44,14 @@
         width: window.innerWidth,
         height: window.innerHeight - 50,
         index_based: false,
-        // overlays: Object.values(Overlays),
-        // extensions: Object.values(Extensions),
+        overlays: [Overlays.Histogram],
         availableTimeframes: {
           '1m': '1 Minute',
           '5m': '5 Minutes',
           '1h': '1 Hour',
           '1d': '1 Day'
         },
-        selectedTimeframe: '1m'
+        selectedTimeframe: '1d'
       };
     },
     mounted() {
@@ -114,8 +113,8 @@
           this.chartData= new DataCube({
             ohlcv: data['chart.data'],
             onchart: [{
-              type: 'EMA',
-              name: 'Multiple EMA',
+              type: 'BB',
+              name: 'BB',
               data: []
             }],
             offchart: [{

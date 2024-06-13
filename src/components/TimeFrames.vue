@@ -25,7 +25,7 @@
   
   <script>
   import {TradingVue, DataCube} from 'trading-vue-js';
-  import TfSelector from './TFSelector.vue';
+  import TfSelector from 'trading-vue-js';
   import Data from '../data/data_tf.json'; // Ensure this path is correct
   export default {
     name: 'Timeframes',

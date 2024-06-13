@@ -6672,6 +6672,12 @@
             }
         },
         {
+            "type": "Segment"
+        },
+        {
+          "type":"Volume"
+        },
+        {
             "type": "LineTool:Extended",
             "settings": {
                 "color": "#3186c4"

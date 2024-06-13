@@ -107,7 +107,7 @@ export default {
         // just create a new overlay with the same type:
         // e.g. use_for() { return ['EMA'] }.
         use_for() {
-            return ['GRIN']
+            return ['GRIN','BB']
         },
         use_for() {
             return ['GRIN']
