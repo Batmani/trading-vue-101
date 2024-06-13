@@ -32,10 +32,18 @@ import StdInput from './components/StdInput.vue'
   const PORT = location.port;
   const URL = `http://localhost:${PORT}/api/v1/klines?symbol=BTCUSDT`;
   const WSS = `ws://localhost:${PORT}/ws/btcusdt@aggTrade`;
-  
+  async function getJson() {
+        let response = await fetch("/history");
+        let data = await response.json();
+        return data;
+    };
+    async function loadchart() {
+      const dat = await getJson();
+      
   export default {
     name: 'App',
-    components: { TradingVue, TimeFrames, MultiChart,   Overlays, Extensions, Toolbar, StdInput
+    components: { TradingVue, 
+        TimeFrames, MultiChart,   Overlays, Extensions, Toolbar, StdInput
 
       },
     data() {
@@ -46,16 +54,14 @@ import StdInput from './components/StdInput.vue'
           onchart: [],
           offchart: [],
           datasets: [],
-        
+        extensions: Object.values(Extensions),
           overlays: Object.values(Overlays),
-
-
 
         },
         width: window.innerWidth,
         height: window.innerHeight - 50,
         index_based: false,
-        overlays: [],
+        overlays: [],s
         availableTimeframes: {
         '1m': '1 Minute',
         '5m': '5 Minutes',
