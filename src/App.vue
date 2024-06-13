@@ -5,9 +5,9 @@
 </template>
 
 <script>
-import { DataCube } from 'trading-vue-js'
+import { DataCube, TradingVue } from 'trading-vue-js'
 import Data from './data/data.json'
-import MainManiApp from '.MainManiApp.vue';
+import MainManiApp from './MainManiApp.vue';
 export default {
     name: 'app',
     components: {
@@ -24,7 +24,7 @@ export default {
         window.dc = this.chart
     },
     beforeDestroy() {
-        window.removeEventListener('resize', this.onResize)
+        window.removeEventListener('resize', this.onResize) 
     },
     data() {
         return {

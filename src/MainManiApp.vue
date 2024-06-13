@@ -1,5 +1,5 @@
-<template>
-    <div id="MainManiApp">
+<!-- <template>
+    <div id="Main-ManiApp">
       <tf-selector :charts="availableTimeframes" @selected="onTimeframeSelected"></tf-selector>
       <MainManiApp
         ref="tvjs"
@@ -13,8 +13,44 @@
       ></MainManiApp>
       <button @click="resetChart">Reset Chart</button>
     </div>
-  </template>
-  
+  </template> -->
+  <template>
+    <!-- Main component  -->
+    <div class="Main-ManiApp" v-bind:id="id"
+        @mousedown="mousedown" @mouseleave="mouseleave"
+         :style="{
+            color: this.chart_props.colors.text,
+            font: this.font_comp,
+            width: this.width+'px',
+            height: this.height+'px'}">
+        <toolbar v-if="toolbar"
+            ref="toolbar"
+            v-on:custom-event="custom_event"
+            v-bind="chart_props"
+            v-bind:config="chart_config">
+        </toolbar>
+        <widgets v-if="controllers.length"
+            ref="widgets"
+            :map="ws" :width="width" :height="height"
+            :tv="this" :dc="data">
+        </widgets>
+        <chart :key="reset"
+            ref="chart"
+            v-bind="chart_props"
+            v-bind:tv_id="id"
+            v-bind:config="chart_config"
+            v-on:custom-event="custom_event"
+            v-on:range-changed="range_changed"
+            v-on:legend-button-click="legend_button">
+        </chart>
+        <transition name="tvjs-drift">
+            <the-tip :data="tip" v-if="tip"
+                @remove-me="tip = null"/>
+        </transition>
+    </div>
+</template>
+
+<script></script>
   <script>
   import {  Chart,  DataCube, Sidebar, MultiChart } from 'trading-vue-js';
   import TfSelector from 'trading-vue-js';
