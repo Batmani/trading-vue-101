@@ -1,87 +1,145 @@
-<div id="app">
-    <trading-vue :data="data"
-      :width="1330"
-      :height="528"
-      title-txt="BTCUSDT"
-      :chart-config="{DEFAULT_LEN:120}"
-      :toolbar="true"
-      :color-back="colors.colorBack"
-      :color-grid="colors.colorGrid"
-      :color-text="colors.colorText">
-    </trading-vue>
-  </div>
+<template>
+    <div id="app">
+      <trading-vue
+        ref="tvjs"
+        :data="chartData"
+        :legend-buttons="['display']"
+        v-on:legend-button-click="onButtonClick"
+        :overlays="overlays"
+        :width="width"
+        :height="height"
+      ></trading-vue>
+      <button @click="resetChart">Reset Chart</button>
+    </div>
+  </template>
+  
   <script>
-  window.onload = function() {
-      loadchart();
-  };
-  async function getJson() {
-      let response = await fetch("/history");
-      let data = await response.json();
-      return data;
-  };
-  async function loadchart() {
-    const dat = await getJson();
-    const app = new Vue({
-      el: '#app',
-      data: function () {
-        return {
-          connection: null,
-          data: {},
-          width: window.innerWidth,
-          height: window.innerHeight,
-          night: true
-        }
-      },
-      created() {
-        this.setData(dat);
-        this.getCandles();
-      },
-      mounted() {
-        window.addEventListener('resize', this.onResize)
-      },
-      methods: {
-        onResize(event) {
-          this.width = window.innerWidth
-          this.height = window.innerHeight
+  import Vue from 'vue';
+  import { TradingVue, DataCube } from 'trading-vue-js';
+ 
+  import Utils from '../src/DataHelper/utils.js';
+  import Const from '../src/DataHelper/constants.js';
+  import Stream from '../src/DataHelper/stream.js';
+  
+  const PORT = location.port;
+  const URL = `http://localhost:${PORT}/api/v1/klines?symbol=BTCUSDT`;
+  const WSS = `ws://localhost:${PORT}/ws/btcusdt@aggTrade`;
+  
+  export default {
+    name: 'App',
+    components: { TradingVue },
+    data() {
+      return {
+        chartData: {
+          ohlcv: [],
+          onchart: [],
+          offchart: [],
+          datasets: []
         },
-        setData(event) {
-          this.data = new TradingVueJs.DataCube({
-            ohlcv: event.ohlcv,
-            onchart: event.onchart,
-            offchart: event.offchart
+        width: window.innerWidth,
+        height: window.innerHeight - 50,
+        index_based: false,
+        overlays: []
+      };
+    },
+    mounted() {
+      window.addEventListener('resize', this.onResize);
+      this.onResize();
+      this.loadChart();
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize', this.onResize);
+      if (this.stream) this.stream.off();
+    },
+    methods: {
+      onResize() {
+        this.width = window.innerWidth;
+        this.height = window.innerHeight - 50;
+      },
+      async loadChart() {
+        let now = Utils.now();
+        try {
+          const data = await this.loadChunk([now - Const.HOUR4, now]);
+          this.chartData = new DataCube({
+            ohlcv: data['chart.data'],
+            onchart: [{
+              type: 'EMAx6',
+              name: 'Multiple EMA',
+              data: []
+            }],
+            offchart: [{
+              type: 'BuySellBalance',
+              name: 'Buy/Sell Balance, $lookback',
+              data: [],
+              settings: {}
+            }],
+            datasets: [{
+              type: 'Trades',
+              id: 'binance-btcusdt',
+              data: []
+            }]
+          }, { aggregation: 100 });
+  
+          this.chartData.onrange(this.loadChunk);
+  
+          this.$nextTick(() => {
+            if (this.$refs.tvjs) {
+              this.$refs.tvjs.resetChart();
+            } else {
+              console.error('tradingVue ref is not available');
+            }
+            this.stream = new Stream(WSS);
+            this.stream.ontrades = this.onTrades;
+            window.dc = this.chartData; // Debug
+            window.tv = this.$refs.tvjs; // Debug
           });
-        },
-        getCandles() {
-          const self = this;
-          self.connection = new WebSocket("wss://stream.bybit.com/realtime");
-          self.connection.addEventListener("message", (event) => {
-            let message = JSON.parse(event.data);
-            if (message.hasOwnProperty("data")) {
-              var ulist = new Array();
-              var candle = message.data['0'];
-              ulist.push([candle.start,candle.open,candle.high,candle.low,candle.close,candle.volume]);
-              self.data.update(new TradingVueJs.DataCube({"ohlcv": ulist, "onchart": [], "offchart": []}));
-            };
-          });
-          self.connection.onopen = function() {
-            var msg = {op: 'subscribe',args: ['klineV2.5.BTCUSD']};
-            var json = JSON.stringify(msg);
-            self.connection.send(json);
-          }
+        } catch (error) {
+          console.error('Error loading chart data:', error);
         }
       },
-      computed: {
-        colors() {
-          return this.night ? {} : {
-              colorBack: '#fff',
-              colorGrid: '#eee',
-              colorText: '#333'
-          }
+      async loadChunk(range) {
+        let [t1, t2] = range;
+        let q = `&interval=1m&startTime=${t1}&endTime=${t2}`;
+        let r = await fetch(URL + q).then(r => r.json());
+        return this.format(this.parseBinance(r));
+      },
+      parseBinance(data) {
+        if (!Array.isArray(data)) return [];
+        return data.map(x => {
+          return x.slice(0, 6).map(parseFloat);
+        });
+      },
+      format(data) {
+        return { 'chart.data': data };
+      },
+      onTrades(trade) {
+        this.chartData.update({
+          t: trade.T,
+          price: parseFloat(trade.p),
+          volume: parseFloat(trade.q),
+          'datasets.binance-btcusdt': [
+            trade.T,
+            trade.m ? 0 : 1,
+            parseFloat(trade.q),
+            parseFloat(trade.p)
+          ]
+        });
+      },
+      resetChart() {
+        if (this.$refs.tvjs) {
+          this.$refs.tvjs.resetChart();
+        } else {
+          console.error('tradingVue ref is not available');
         }
       },
-      beforeDestroy() {
-          window.removeEventListener('resize', this.onResize)
+      onButtonClick(button) {
+        console.log('Button clicked:', button);
       }
-    })
-  }
+    }
+  };
   </script>
+  
+  <style>
+  /* Add any additional styling here */
+  </style>
+  

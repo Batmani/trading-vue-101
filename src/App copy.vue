@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <trading-vue ref="tvjs" :data="chart"  :legend-buttons="['display']" v-on:legend-button-click="on_button_click"
         :overlays="overlays" :width="this.width" :height="this.height">
     </trading-vue>
@@ -18,10 +18,10 @@ import Stream from '../src/DataHelper/stream.js'
 const PORT = location.port
 const URL = `http://localhost:${PORT}/api/v1/klines?symbol=`
 const WSS = `ws://localhost:${PORT}/ws/btcusdt@aggTrade`
-
+import Vue from 'vue';
  async function loadchart() {
     const app = new Vue({
-    name: 'app',
+        el: '#app',
     components: { TradingVue, },
     methods: {
     },
@@ -32,7 +32,7 @@ const WSS = `ws://localhost:${PORT}/ws/btcusdt@aggTrade`
         this.onResize()
         let now = Utils.now()
         this.load_chunk([now - Const.HOUR4, now]).then(data => {
-            this.chart = new TradingVueJs.DataCube({
+            this.chart = new DataCube({
                 ohlcv: data['chart.data'],
                 onchart: [{
                     type: 'EMAx6',
@@ -131,6 +131,95 @@ const WSS = `ws://localhost:${PORT}/ws/btcusdt@aggTrade`
             index_based: false,
             overlays: [ScriptOverlay, BSB]
         }
-    }
+    }})
+
+    
 }
-</script>
+</script> -->
+
+
+
+
+<!-- <div id="app">
+    <trading-vue :data="data"
+      :width="1330"
+      :height="528"
+      title-txt="BTCUSDT"
+      :chart-config="{DEFAULT_LEN:120}"
+      :toolbar="true"
+      :color-back="colors.colorBack"
+      :color-grid="colors.colorGrid"
+      :color-text="colors.colorText">
+    </trading-vue>
+  </div>
+  <script>
+  import Vue from 'vue';
+  window.onload = function() {
+      loadchart();
+  };
+  
+  async function loadchart() {
+    const app = new Vue({
+      el: '#app',
+      data: function () {
+        return {
+          connection: null,
+          data: {},
+          width: window.innerWidth,
+          height: window.innerHeight,
+          night: true
+        }
+      },
+      created() {
+        this.setData(dat);
+        this.getCandles();
+      },
+      mounted() {
+        window.addEventListener('resize', this.onResize)
+      },
+      methods: {
+        onResize(event) {
+          this.width = window.innerWidth
+          this.height = window.innerHeight
+        },
+        setData(event) {
+          this.data = new TradingVueJs.DataCube({
+            ohlcv: event.ohlcv,
+            onchart: event.onchart,
+            offchart: event.offchart
+          });
+        },
+        getCandles() {
+          const self = this;
+          self.connection = new WebSocket("ws://localhost:${PORT}/ws/btcusdt@aggTrade");
+          self.connection.addEventListener("message", (event) => {
+            let message = JSON.parse(event.data);
+            if (message.hasOwnProperty("data")) {
+              var ulist = new Array();
+              var candle = message.data['0'];
+              ulist.push([candle.start,candle.open,candle.high,candle.low,candle.close,candle.volume]);
+              self.data.update(new TradingVueJs.DataCube({"ohlcv": ulist, "onchart": [], "offchart": []}));
+            };
+          });
+          self.connection.onopen = function() {
+            var msg = {op: 'subscribe',args: ['klineV2.5.BTCUSD']};
+            var json = JSON.stringify(msg);
+            self.connection.send(json);
+          }
+        }
+      },
+      computed: {
+        colors() {
+          return this.night ? {} : {
+              colorBack: '#fff',
+              colorGrid: '#eee',
+              colorText: '#333'
+          }
+        }
+      },
+      beforeDestroy() {
+          window.removeEventListener('resize', this.onResize)
+      }
+    })
+  }
+  </script> -->
