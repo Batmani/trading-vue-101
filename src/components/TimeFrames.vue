@@ -1,6 +1,6 @@
 <template>
     <div>
-      <trading-vue
+      <MainManiApp
         :data="chart"
         :width="width"
         :height="height"
@@ -10,7 +10,7 @@
         :color-grid="colors.colorGrid"
         :color-text="colors.colorText"
          ref="tvjs"
-      ></trading-vue>
+      ></MainManiApp>
       <span class="log-scale">
         <input type="checkbox" v-model="log_scale" />
         <label>Log Scale</label>
@@ -24,15 +24,17 @@
   </template>
   
   <script>
-  import {TradingVue, DataCube} from 'trading-vue-js';
+  import { DataCube} from 'trading-vue-js';
   import TfSelector from 'trading-vue-js';
   import Data from '../data/data_tf.json'; // Ensure this path is correct
+  import MainManiApp from '.MainManiApp.vue';
+
   export default {
     name: 'Timeframes',
     description: 'Should display correct dates for every timeframe',
     props: ['night'],
     components: {
-      TradingVue,
+      MainManiApp,
       TfSelector
     },
     methods: {
@@ -42,7 +44,7 @@
       },
       on_selected(tf) {
         this.chart.set('chart.data', this.charts[tf.name]);
-        this.$refs.tradingVue.resetChart();
+        this.$refs.maniManiApp.resetChart();
         this.log_scale = false;
       }
     },
@@ -50,7 +52,7 @@
       window.addEventListener('resize', this.onResize);
       this.onResize();
       window.dc = this.chart;
-      window.tv = this.$refs.tradingVue;
+      window.tv = this.$refs.maniManiApp;
     },
     computed: {
       colors() {

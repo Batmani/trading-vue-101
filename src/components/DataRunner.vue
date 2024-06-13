@@ -1,7 +1,7 @@
 <!-- <template>
-    <trading-vue ref="tvjs" :data="chart"  :legend-buttons="['display']" v-on:legend-button-click="on_button_click"
+    <mainManiApp ref="tvjs" :data="chart"  :legend-buttons="['display']" v-on:legend-button-click="on_button_click"
         :overlays="overlays" :width="this.width" :height="this.height">
-    </trading-vue>
+    </mainManiApp>
 </template>
 
 <script>
@@ -9,7 +9,7 @@
       loadchart();
   };
 import XP from 'tvjs-xp'
-import {TradingVue, DataCube} from 'trading-vue-js'
+import {TradingVue, DataCube} from 'mainManiApp-js'
 import Data from '../data/data.json'
 import Overlays from 'tvjs-overlays'
 import Utils from '../src/DataHelper/utils.js'

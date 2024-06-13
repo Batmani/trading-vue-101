@@ -1,7 +1,7 @@
 <template>
     <div id="MainManiApp">
       <tf-selector :charts="availableTimeframes" @selected="onTimeframeSelected"></tf-selector>
-      <trading-vue
+      <MainManiApp
         ref="tvjs"
         :data="Data"
         :overlays="overlays"
@@ -10,27 +10,26 @@
         @legend-button-click="onButtonClick"
         :width="width"
         :height="height"
-      ></trading-vue>
+      ></MainManiApp>
       <button @click="resetChart">Reset Chart</button>
     </div>
   </template>
   
   <script>
-  import { TradingVue,  DataCube, Sidebar, MultiChart } from 'trading-vue-js';
+  import {  Chart,  DataCube, Sidebar, MultiChart } from 'trading-vue-js';
   import TfSelector from 'trading-vue-js';
   import Utils from './DataHelper/utils.js';
   import Const from './DataHelper/constants.js';
   import Stream from './DataHelper/stream.js';
   import Overlays from 'tvjs-overlays';
-  import Data from './data/data.json';
   const PORT = location.port;
   const URL = `http:localhost:${PORT}/api/v1/klines?symbol=BTCUSDT`;
   const WSS = `ws:localhost:${PORT}/ws/btcusdt@aggTrade`;
   
   export default {
-    name: 'mani-main-app',
+    name: 'MainManiApp',
     components: {
-      TradingVue,
+     Chart,
       TfSelector,Sidebar, MultiChart
     },
     data() {

@@ -1,6 +1,6 @@
 <template>
     <div>
-      <trading-vue
+      <MainManiApp
         :data="chartData"
         :width="width"
         :height="height"
@@ -9,12 +9,12 @@
         :color-grid="colors.colorGrid"
         :color-text="colors.colorText"
         :toolbar="true"
-      ></trading-vue>
+      ></MainManiApp>
     </div>
   </template>
   
   <script>
-  import {TradingVue, DataCube} from 'trading-vue-js';
+  import { DataCube} from 'trading-vue-js';
 
   
   export default {

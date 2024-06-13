@@ -1,6 +1,6 @@
-<template>
+<!-- <template>
     <div>
-      <trading-vue
+      <MainManiApp
         :data="chart"
         :width="width"
         :height="height"
@@ -10,21 +10,21 @@
         :color-grid="colors.colorGrid"
         :color-text="colors.colorText"
         ref="tvjs"
-      ></trading-vue>
+      ></MainManiApp>
     </div>
   </template>
   
   <script>
-  import TradingVue from 'trading-vue-js';
   import Data from '../../data/data_buttons.json'; // Ensure this path is correct
   import CodeIcon from 'trading-vue-js'; // Ensure this path is correct
+import MainManiApp from '.MainManiApp.vue';
   
   export default {
     name: 'LegendButtons',
     description: 'Legend buttons test (click the button, see console)',
     props: ['night'],
     components: {
-      TradingVue
+      MainManiApp
     },
     data() {
       return {
@@ -82,4 +82,4 @@
   <style>
   /* Add any additional styling here */
   </style>
-  
+   -->

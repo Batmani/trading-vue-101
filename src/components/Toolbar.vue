@@ -1,6 +1,6 @@
 
 <template>
-  <div class="trading-vue-toolbar" :style="styles"
+  <div class="mainManiApp-toolbar" :style="styles"
       :key="tool_count">
       <toolbar-item v-for="(tool, i) in filteredGroups"
           @item-selected="selected"
@@ -108,7 +108,7 @@ export default {
 </script>
 
 <style>
-.trading-vue-toolbar {
+.mainManiApp-toolbar {
   position: absolute;
   border-right: 1px solid black;
   z-index: 101;

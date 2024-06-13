@@ -1,9 +1,10 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 const { watch } = require('vue');
 global.port = '8080'
 module.exports = {
-
+    
     entry: './src/main.js',
 
     devServer: {
