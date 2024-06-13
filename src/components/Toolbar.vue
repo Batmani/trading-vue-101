@@ -15,11 +15,8 @@
   </template>
   
   <script>
-  import TradingVue from 'trading-vue-js';
-  import 'trading-vue-js/dist/trading-vue.css';
+  import { TradingVue, DataCube } from 'trading-vue-js';
   import Data from '../data/data_tools.json'; // Ensure this path is correct
-  import Utils from '../src/stuff/utils.js'; // Ensure this path is correct
-  import DataCube from 'trading-vue-js/dist/helpers/datacube.js';
   
   export default {
     name: 'Toolbar',

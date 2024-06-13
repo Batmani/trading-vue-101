@@ -109,6 +109,9 @@ export default {
         use_for() {
             return ['GRIN']
         },
+        use_for() {
+            return ['GRIN']
+        },
         data_colors() {
             return ['yellow']
         },

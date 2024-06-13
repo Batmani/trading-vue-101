@@ -9,17 +9,15 @@
         :color-back="colors.colorBack"
         :color-grid="colors.colorGrid"
         :color-text="colors.colorText"
-        ref="tradingVue"
+        ref="tvjs"
       ></trading-vue>
     </div>
   </template>
   
   <script>
   import TradingVue from 'trading-vue-js';
-  import 'trading-vue-js/dist/trading-vue.css';
-  import Data from '../data/data_buttons.json'; // Ensure this path is correct
-  import Utils from '../src/DataHelper/utils.js';
-  import CodeIcon from './LegendButtons/code3.json'; // Ensure this path is correct
+  import Data from '../../data/data_buttons.json'; // Ensure this path is correct
+  import CodeIcon from 'trading-vue-js'; // Ensure this path is correct
   
   export default {
     name: 'LegendButtons',

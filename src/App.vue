@@ -9,6 +9,7 @@
         v-on:legend-button-click="onButtonClick"
         :overlays="overlays"
         :width="width"
+         :extensions="ext"
         :height="height"
       ></trading-vue>
       <button @click="resetChart">Reset Chart</button>
@@ -16,27 +17,40 @@
   </template>
   
   <script>
-  import Vue from 'vue';
   import { TradingVue, DataCube } from 'trading-vue-js';
-  import TfSelector from '../src/components/TfSelector.vue';
+  import TfSelector from './components/TFSelector.vue';
   import Utils from '../src/DataHelper/utils.js';
   import Const from '../src/DataHelper/constants.js';
   import Stream from '../src/DataHelper/stream.js';
-  
+  import Overlays from 'tvjs-overlays'
+  import Extensions from 'tvjs-xp'
+import TimeFrames from './components/TimeFrames.vue';
+import MultiChart from './components/MultiChart.vue';
+import Toolbar from './components/Toolbar.vue';
+import StdInput from './components/StdInput.vue'
+
   const PORT = location.port;
   const URL = `http://localhost:${PORT}/api/v1/klines?symbol=BTCUSDT`;
   const WSS = `ws://localhost:${PORT}/ws/btcusdt@aggTrade`;
   
   export default {
     name: 'App',
-    components: { TradingVue, TfSelector  },
+    components: { TradingVue, TimeFrames, MultiChart,   Overlays, Extensions, Toolbar, StdInput
+
+      },
     data() {
       return {
         chartData: {
+            ext: Object.values(XP),
           ohlcv: [],
           onchart: [],
           offchart: [],
-          datasets: []
+          datasets: [],
+        
+          overlays: Object.values(Overlays),
+
+
+
         },
         width: window.innerWidth,
         height: window.innerHeight - 50,

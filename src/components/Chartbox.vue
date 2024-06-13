@@ -14,9 +14,8 @@
   </template>
   
   <script>
-  import TradingVue from 'trading-vue-js';
-  import 'trading-vue-js/dist/trading-vue.css';
-  import DataCube from 'trading-vue-js/dist/helpers/datacube.js';
+  import {TradingVue, DataCube} from 'trading-vue-js';
+
   
   export default {
     name: 'Chartbox',

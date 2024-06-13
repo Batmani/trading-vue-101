@@ -9,7 +9,7 @@
         :color-back="colors.colorBack"
         :color-grid="colors.colorGrid"
         :color-text="colors.colorText"
-        ref="tradingVue"
+         ref="tvjs"
       ></trading-vue>
       <span class="log-scale">
         <input type="checkbox" v-model="log_scale" />
@@ -24,13 +24,9 @@
   </template>
   
   <script>
-  import TradingVue from 'trading-vue-js';
-  import 'trading-vue-js/dist/trading-vue.css';
-  import TfSelector from './Timeframes/TfSelector.vue';
+  import {TradingVue, DataCube} from 'trading-vue-js';
+  import TfSelector from './TFSelector.vue';
   import Data from '../data/data_tf.json'; // Ensure this path is correct
-  import Utils from '../src/DataHelper/utils.js';
-  import DataCube from 'trading-vue-js/dist/helpers/datacube.js';
-  
   export default {
     name: 'Timeframes',
     description: 'Should display correct dates for every timeframe',

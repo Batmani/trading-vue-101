@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <trading-vue ref="tvjs" :data="chart"  :legend-buttons="['display']" v-on:legend-button-click="on_button_click"
         :overlays="overlays" :width="this.width" :height="this.height">
     </trading-vue>
@@ -133,4 +133,4 @@ const WSS = `ws://localhost:${PORT}/ws/btcusdt@aggTrade`
         }
     }
 }
-</script>
+</script> -->
