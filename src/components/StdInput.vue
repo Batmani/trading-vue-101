@@ -9,7 +9,7 @@
             class="std-input"
             :value="value"
             @input="$emit('input', $event.target.value)">
-            <option v-for="opt in list">{{opt}}</option>
+            <option v-for="opt in list" :key="opt">{{opt}}</option>
         </select>
     </span>
 </template>
