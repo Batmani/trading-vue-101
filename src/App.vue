@@ -1,17 +1,19 @@
 <template>
-    <MainManiApp :data="chart" :width="this.width" :height="this.height" :color-back="colors.colorBack"
-        :color-grid="colors.colorGrid" :color-text="colors.colorText">
-    </MainManiApp>
-</template>
+    <!-- TradingVueJs 101 (example from 'Getting Started' ) -->
+    
+    <!-- <trading-vue :data="chart" 
+      >
+    </trading-vue>
+    </template> -->
 
-<script>
+<!-- <script>
 import { DataCube, TradingVue } from 'trading-vue-js'
-import Data from './data/data.json'
-import MainManiApp from './MainManiApp.vue';
+ import Data from './data/data_grids.json'
+import ManiDataStreamComponent from './components/ManiDataStreamComponent.vue';
 export default {
     name: 'app',
     components: {
-        MainManiApp
+        TradingVue, ManiDataStreamComponent
     },
     methods: {
         onResize() {
@@ -29,8 +31,6 @@ export default {
     data() {
         return {
             chart: new DataCube(Data),
-            width: window.innerWidth,
-            height: window.innerHeight,
             colors: {
                 colorBack: '#fff',
                 colorGrid: '#eee',
@@ -49,4 +49,4 @@ body {
     padding: 0;
     overflow: hidden;
 }
-</style>
+</style> -->

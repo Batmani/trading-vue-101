@@ -1,38 +1,45 @@
-<!-- <template>
-    <mainManiApp ref="tvjs" :data="chart"  :legend-buttons="['display']" v-on:legend-button-click="on_button_click"
-        :overlays="overlays" :width="this.width" :height="this.height">
-    </mainManiApp>
+<template>
+    <span>
+        <trading-vue :data="chart" :width="this.width" :height="this.height" :chart-config="{ MIN_ZOOM: 1 }" ref="tvjs"
+            :toolbar="true" :index-based="index_based" :overlays="overlays"  
+           e:color-text="colors.colorText">
+        </trading-vue>
+        <span class="gc-mode">
+            <input type="checkbox" v-model="index_based">
+            <label>Index Based</label>
+        </span>
+    </span>
 </template>
 
 <script>
-  window.onload = function() {
-      loadchart();
-  };
-import XP from 'tvjs-xp'
-import {TradingVue, DataCube} from 'mainManiApp-js'
-import Data from '../data/data.json'
-import Overlays from 'tvjs-overlays'
-import Utils from '../src/DataHelper/utils.js'
-import Const from '../src/DataHelper/constants.js'
-import Stream from '../src/DataHelper/stream.js'
-const PORT = location.port
-const URL = `http://localhost:${PORT}/api/v1/klines?symbol=`
-const WSS = `ws://localhost:${PORT}/ws/btcusdt@aggTrade`
-
- async function loadchart() {
-    const app = new Vue({
-    name: 'app',
-    components: { TradingVue, },
-    methods: {
+import TradingVue from 'trading-vue-js'
+import Utils from  'trading-vue-js'
+import Const from 'trading-vue-js'
+import DataCube from 'trading-vue-js'
+import Stream from 'trading-vue-js'
+import Chart  from 'trading-vue-js'
+import TfSelector from 'trading-vue-js'
+import Sidebar from 'trading-vue-js'
+import MultiChart from 'trading-vue-js'
+const PORT = location.port;
+const URL = `http:localhost:${PORT}/api/v1/klines?symbol=BTCUSDT`;
+const WSS = `ws:localhost:${PORT}/ws/btcusdt@aggTrade`;
+export default {
+    name: 'MainManiApp',
+    components: {
+        Chart,
+        TfSelector,
+        Sidebar,
+        MultiChart
     },
-    props: ['night'],
 
     mounted() {
-        window.addEventListener('resize', this.onResize)
-        this.onResize()
+        window.addEventListener('resize', this.onResize);
+        this.onResize();
+        // Load the last data chunk & init DataCube:
         let now = Utils.now()
         this.load_chunk([now - Const.HOUR4, now]).then(data => {
-            this.chart = new TradingVueJs.DataCube({
+            this.chart = new DataCube({
                 ohlcv: data['chart.data'],
                 onchart: [{
                     type: 'EMAx6',
@@ -53,14 +60,14 @@ const WSS = `ws://localhost:${PORT}/ws/btcusdt@aggTrade`
             }, { aggregation: 100 })
             // Register onrange callback & And a stream of trades
             this.chart.onrange(this.load_chunk)
-            this.$refs.tvjs.resetChart();
-
+            this.$refs.tvjs.resetChart()
             this.stream = new Stream(WSS)
             this.stream.ontrades = this.on_trades
-            window.dc = this.chart      // Debug
+            window.dc = this.chart // Debug
             window.tv = this.$refs.tvjs // Debug
 
         })
+
     },
     methods: {
         onResize(event) {
@@ -76,14 +83,13 @@ const WSS = `ws://localhost:${PORT}/ws/btcusdt@aggTrade`
             let r = await fetch(URL + q).then(r => r.json())
             return this.format(this.parse_binance(r))
         },
-        // Parse a specific exchange format
         parse_binance(data) {
             if (!Array.isArray(data)) return []
             return data.map(x => {
                 for (var i = 0; i < x.length; i++) {
                     x[i] = parseFloat(x[i])
                 }
-                return x.slice(0,6)
+                return x.slice(0, 6)
             })
         },
         format(data) {
@@ -97,12 +103,12 @@ const WSS = `ws://localhost:${PORT}/ws/btcusdt@aggTrade`
         },
         on_trades(trade) {
             this.chart.update({
-                t: trade.T,     // Exchange time (optional)
-                price: parseFloat(trade.p),   // Trade price
-                volume: parseFloat(trade.q),  // Trade amount
+                t: trade.T, // Exchange time (optional)
+                price: parseFloat(trade.p), // Trade price
+                volume: parseFloat(trade.q), // Trade amount
                 'datasets.binance-btcusdt': [ // Update dataset
                     trade.T,
-                    trade.m ? 0 : 1,          // Sell or Buy
+                    trade.m ? 0 : 1, // Sell or Buy
                     parseFloat(trade.q),
                     parseFloat(trade.p)
                 ],
@@ -125,12 +131,25 @@ const WSS = `ws://localhost:${PORT}/ws/btcusdt@aggTrade`
     },
     data() {
         return {
-            chart: {},
+            chartData: new DataCube({
+                ohlcv: [],
+                onchart: [],
+                offchart: [],
+                datasets: [],
+            }),
             width: window.innerWidth,
-            height: window.innerHeight,
+            height: window.innerHeight - 50,
             index_based: false,
-            overlays: [ScriptOverlay, BSB]
-        }
-    }
+            overlays: [Overlays.Histogram],
+            availableTimeframes: {
+                '1m': '1 Minute',
+                '5m': '5 Minutes',
+                '1h': '1 Hour',
+                '1d': '1 Day'
+            },
+            selectedTimeframe: '1d'
+        };
+    },
+
 }
-</script> -->
+</script>
