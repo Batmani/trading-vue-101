@@ -1,8 +1,10 @@
 <template>
     <div id="app">
+        <tf-selector :charts="availableTimeframes" @selected="onTimeframeSelected"></tf-selector>
       <trading-vue
         ref="tvjs"
         :data="chartData"
+         :toolbar="true"
         :legend-buttons="['display']"
         v-on:legend-button-click="onButtonClick"
         :overlays="overlays"
@@ -16,7 +18,7 @@
   <script>
   import Vue from 'vue';
   import { TradingVue, DataCube } from 'trading-vue-js';
- 
+  import TfSelector from '../src/components/TfSelector.vue';
   import Utils from '../src/DataHelper/utils.js';
   import Const from '../src/DataHelper/constants.js';
   import Stream from '../src/DataHelper/stream.js';
@@ -27,7 +29,7 @@
   
   export default {
     name: 'App',
-    components: { TradingVue },
+    components: { TradingVue, TfSelector  },
     data() {
       return {
         chartData: {
@@ -39,7 +41,14 @@
         width: window.innerWidth,
         height: window.innerHeight - 50,
         index_based: false,
-        overlays: []
+        overlays: [],
+        availableTimeframes: {
+        '1m': '1 Minute',
+        '5m': '5 Minutes',
+        '1h': '1 Hour',
+        '1d': '1 Day'
+      },
+      selectedTimeframe: '1m'
       };
     },
     mounted() {
@@ -99,7 +108,7 @@
       },
       async loadChunk(range) {
         let [t1, t2] = range;
-        let q = `&interval=1m&startTime=${t1}&endTime=${t2}`;
+        let q = `&interval=${this.selectedTimeframe}&startTime=${t1}&endTime=${t2}`;
         let r = await fetch(URL + q).then(r => r.json());
         return this.format(this.parseBinance(r));
       },
@@ -134,7 +143,11 @@
       },
       onButtonClick(button) {
         console.log('Button clicked:', button);
-      }
+      },
+      onTimeframeSelected(selection) {
+      this.selectedTimeframe = selection.name;
+      this.loadChart();
+    }
     }
   };
   </script>
